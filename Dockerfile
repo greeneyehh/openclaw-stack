@@ -6,6 +6,10 @@ ARG OPENCLAW_REF=main
 
 FROM node:22-bookworm AS builder
 
+# ARGs aus globalem Scope hier verfügbar machen (vor RUN nutzen)
+ARG OPENCLAW_REPO=https://github.com/openclaw/openclaw.git
+ARG OPENCLAW_REF=main
+
 # Bun für Build-Skripte (laut offiziellem OpenClaw Dockerfile)
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
@@ -17,7 +21,8 @@ WORKDIR /app
 # OpenClaw-Quellcode klonen
 RUN apt-get update && apt-get install -y --no-install-recommends git \
   && rm -rf /var/lib/apt/lists/* \
-  && git clone --depth 1 --branch "${OPENCLAW_REF}" "${OPENCLAW_REPO}" . || git clone --depth 1 "${OPENCLAW_REPO}" .
+  && git clone --depth 1 --branch "${OPENCLAW_REF}" "${OPENCLAW_REPO}" . \
+  || git clone --depth 1 "${OPENCLAW_REPO}" .
 
 ARG OPENCLAW_DOCKER_APT_PACKAGES=""
 RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
