@@ -67,12 +67,38 @@ docker compose run --rm openclaw-cli channels add --channel telegram --token "<T
 docker compose run --rm openclaw-cli pairing approve telegram <CODE>
 ```
 
+## WireGuard-Client (optional)
+
+Der gesamte Traffic des Gateways kann über einen WireGuard-Tunnel laufen (z. B. für Tailscale/Netzwerk-VPN).
+
+**Voraussetzung:** WireGuard-Kernelmodul auf dem Host (üblich unter Linux; unter macOS/Windows ggf. WireGuard-Desktop-App oder WG im Docker-Host-Netz prüfen).
+
+1. **Config anlegen** (private Keys eintragen):
+   ```bash
+   cp wireguard/wg0.conf.example wireguard/wg0.conf
+   # wireguard/wg0.conf bearbeiten: PrivateKey, PublicKey, Endpoint
+   ```
+
+2. **Stack mit VPN starten:**
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.vpn.yml up -d --build
+   ```
+
+   Beim ersten Mal das WireGuard-Image bauen: `--build`. Danach wie gewohnt:
+   - Control UI: http://127.0.0.1:18789/
+   - Der Gateway-Container nutzt den Netz-Stack des WireGuard-Containers; ausgehender Traffic geht durch den Tunnel.
+
+3. **Ohne VPN** (Standard): nur `docker compose up -d` (ohne `docker-compose.vpn.yml`).
+
+Optional in `.env`: **OPENCLAW_WIREGUARD_CONF** – Pfad zur `wg0.conf` (Standard: `./wireguard/wg0.conf`).
+
 ## Optionale Umgebungsvariablen (.env)
 
 - **OPENCLAW_GATEWAY_PORT** / **OPENCLAW_BRIDGE_PORT** – Ports (Default 18789, 18790)
 - **OPENCLAW_GATEWAY_BIND** – `loopback`, `lan` oder `0.0.0.0`
 - **OPENCLAW_DOCKER_APT_PACKAGES** – Zusätzliche apt-Pakete beim Image-Build (z. B. `ffmpeg git`)
 - **OPENCLAW_IMAGE** – Image-Name (Default: `openclaw:local`)
+- **OPENCLAW_WIREGUARD_CONF** – Pfad zur WireGuard-Config (nur bei VPN-Modus)
 
 Weitere Optionen siehe `.env.example`.
 

@@ -1,0 +1,27 @@
+# OpenClaw mit WireGuard-Client – Override
+# Nutzung: docker compose -f docker-compose.yml -f docker-compose.vpn.yml up -d
+#
+# Voraussetzung: wireguard/wg0.conf anlegen (siehe wireguard/wg0.conf.example).
+# Der gesamte Traffic des Gateways läuft dann durch den WireGuard-Tunnel.
+
+services:
+  wireguard:
+    build: ./wireguard
+    image: openclaw-wireguard:local
+    container_name: openclaw-wireguard
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - ${OPENCLAW_WIREGUARD_CONF:-./wireguard/wg0.conf}:/etc/wireguard/wg0.conf:ro
+    ports:
+      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+      - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+    restart: unless-stopped
+
+  openclaw-gateway:
+    network_mode: service:wireguard
+    depends_on:
+      - wireguard
+    ports: []

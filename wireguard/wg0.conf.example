@@ -1,0 +1,23 @@
+# WireGuard Client – Beispielkonfiguration
+# Kopiere diese Datei nach wg0.conf und trage deine Keys/Endpoints ein.
+# Die echte wg0.conf wird von git ignoriert (enthält private Keys).
+#
+# [Interface]
+# PrivateKey = <dein_privater_Client-Key>
+# Address = 10.0.0.2/32
+# DNS = 1.1.1.1
+#
+# [Peer]
+# PublicKey = <öffentlicher_Server-Key>
+# AllowedIPs = 0.0.0.0/0
+# Endpoint = vpn.example.com:51820
+
+[Interface]
+PrivateKey = DEIN_PRIVATER_SCHLUESSEL
+Address = 10.0.0.2/32
+DNS = 1.1.1.1
+
+[Peer]
+PublicKey = OEFFENTLICHER_SERVER_SCHLUESSEL
+AllowedIPs = 0.0.0.0/0
+Endpoint = vpn.example.com:51820
