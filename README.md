@@ -7,6 +7,8 @@ Docker-Compose-Setup für [OpenClaw](https://github.com/openclaw/openclaw) (pers
 - **Docker** (Desktop oder Engine) mit **Docker Compose v2**
 - Node ≥22 wird im Image verwendet (nicht lokal nötig)
 
+Das Image wird aus dem Dockerfile gebaut (Clone + Build von [openclaw/openclaw](https://github.com/openclaw/openclaw)); es ist **kein Pull** von Docker Hub nötig – auch für Remote-Deployments (Railway, Render, Fly.io, etc.) wird beim Deploy gebaut.
+
 ## Quick Start
 
 ```bash
